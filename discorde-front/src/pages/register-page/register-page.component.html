@@ -1,0 +1,6 @@
+Username
+<input type="text" [ngModel]="username" (ngModelChange)="updateUsername($event)">
+Password
+<input type="text" [ngModel]="password" (ngModelChange)="updatePassword($event)">
+
+<button (click)="send()">Register</button>

@@ -1,0 +1,7 @@
+<h1>Available users</h1>
+
+<ul>
+  <li *ngFor="let user of (getUsers$| async)">
+    {{user.username}}
+  </li>
+</ul>

@@ -1,0 +1,17 @@
+[package]
+name = "discorde-api"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tokio = { version = "1.41.1", features = ["macros", "net", "rt-multi-thread", "sync", "tracing", "fs"] }
+tokio-stream = { version = "0.1.16", features = ["fs"] }
+axum = { version = "0.7.9", features = ["ws", "tokio", "http2", "json", "tracing", "macros"] }
+tower-http = { version = "0.6.2", features = ["cors"] }
+serde = { version = "1.0.215", features = ["derive"] }
+serde_json = "1.0.133"
+tracing = "0.1.40"
+tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
+uuid = { version = "1.11.0", features = ["v4"] }
+libc = "0.2.164"
+futures-util = "0.3.31"

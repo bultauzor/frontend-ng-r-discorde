@@ -1,0 +1,7 @@
+<div class="bar">
+  <a routerLink="/">Home</a>
+  <a *ngIf="!(connected$ | async)" routerLink="/login">Login</a>
+  <a *ngIf="(connected$ | async)">Logout</a>
+</div>
+
+<router-outlet />

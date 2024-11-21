@@ -1,0 +1,11 @@
+Username
+<input type="text" [ngModel]="username" (ngModelChange)="updateUsername($event)">
+Password
+<input type="text" [ngModel]="password" (ngModelChange)="updatePassword($event)">
+
+<button (click)="send()">Login</button>
+
+
+<br>
+
+<a routerLink="/register">Or Register</a>
