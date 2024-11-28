@@ -19,17 +19,17 @@ export class Message {
 
   private formatTimestamp() {
     const diff = Math.round(((new Date()).getTime() - this.timestamp.getTime()) / 1000)
-    if (diff > 60 * 60 * 24) {
+    if (diff > 60 * 60 * 24 * 2) {
       return `${Math.round(diff / 60 * 60 * 24)} days ago`
-    } else if (diff == 60 * 60 * 24) {
+    } else if (diff >= 60 * 60 * 24) {
       return `1 day ago`
-    } else if (diff > 60 * 60) {
+    } else if (diff > 60 * 60 * 2) {
       return `${Math.round(diff / 60 * 60)} hours ago`
-    } else if (diff == 60 * 60) {
+    } else if (diff >= 60 * 60) {
       return `1 hour ago`
-    } else if (diff > 60) {
+    } else if (diff > 60 * 2) {
       return `${Math.round(diff / 60)} minutes ago`
-    } else if (diff == 60) {
+    } else if (diff >= 60) {
       return `1 minute ago`
     } else {
       return "now"
