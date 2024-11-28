@@ -1,7 +1,7 @@
 <div class="main">
  <div class="container">
    <div class="messages">
-     <app-message *ngFor="let msg of messages" [author]="msg.author" [timestamp]="(msg.timestamp$ | async) || 'error'" [message]="msg.message"></app-message>
+     <app-message *ngFor="let msg of messages" [author]="msg.author" [timestamp]="(msg.timestamp$ | async) || 'error'" [message]="(msg.message$ | async) || ''"></app-message>
    </div>
    <input type="text" (keydown.enter)="send()" [ngModel]="body" (ngModelChange)="updateBody($event)" placeholder="Type your awesome message">
  </div>
