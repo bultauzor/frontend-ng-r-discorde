@@ -2,7 +2,7 @@
   <a routerLink="/">Home</a>
   <a *ngIf="!(connected$ | async)" routerLink="/login">Login</a>
   <a *ngIf="(connected$ | async)" routerLink="/new">Create chat</a>
-  <a (click)="logout()" *ngIf="(connected$ | async)">Logout</a>
+  <a (click)="logout()" *ngIf="(connected$ | async)" style="cursor: crosshair">Logout</a>
 </div>
 
 <router-outlet/>
