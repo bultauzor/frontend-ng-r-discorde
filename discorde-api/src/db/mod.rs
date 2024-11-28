@@ -1,5 +1,5 @@
 use crate::db::core::{Condition, Db, IdDocument};
-use crate::models::chat::Chat;
+use crate::models::chat::{Chat, Message};
 use crate::models::user::User;
 use serde_json::Value;
 use std::io::Error;
@@ -17,6 +17,7 @@ enum Request {
     UpdateUser(User, oneshot::Sender<Result<(), Error>>),
     GetChat(String, oneshot::Sender<Result<Option<Chat>, Error>>),
     InsertChat(Chat, oneshot::Sender<Result<String, Error>>),
+    InsertMessage(String, Message, oneshot::Sender<Result<(), Error>>),
 }
 
 pub struct Database(UnboundedSender<Request>);
@@ -94,6 +95,18 @@ impl Database {
 
                     _ = reply.send(res);
                 }
+                Request::InsertMessage(id, message, reply) => {
+                    let res = db.clone().collection("chats").doc(&id).get::<Chat>().await;
+                    let res = match res {
+                        Ok(Some(mut chat)) => {
+                            chat.messages.insert(message);
+                            db.clone().collection("chats").doc(&id).update(chat).await
+                        }
+                        Err(error) => Err(error),
+                        Ok(None) => Ok(())
+                    };
+                    _ = reply.send(res);
+                }
             }
         }
     }
@@ -131,6 +144,12 @@ impl Database {
     pub async fn insert_chat(&self, chat: Chat) -> Result<String, Error> {
         let (tx, rx) = oneshot::channel();
         _ = self.0.send(Request::InsertChat(chat, tx));
+        rx.await.map_err(|error| error!(?error)).unwrap()
+    }
+
+    pub async fn insert_message(&self, chat: String, message: Message) -> Result<(), Error> {
+        let (tx, rx) = oneshot::channel();
+        _ = self.0.send(Request::InsertMessage(chat, message, tx));
         rx.await.map_err(|error| error!(?error)).unwrap()
     }
 }

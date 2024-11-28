@@ -1,3 +1,4 @@
+use std::net::SocketAddr;
 use crate::api::DiscordeState;
 use crate::chat::ChatSvc;
 use crate::db::Database;
@@ -30,7 +31,7 @@ async fn main() {
         api::routes(DiscordeState {
             chat: ChatSvc::new(db.clone()),
             db,
-        }),
+        }).into_make_service_with_connect_info::<SocketAddr>(),
     )
     .await
     .unwrap();

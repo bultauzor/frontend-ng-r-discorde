@@ -4,6 +4,8 @@ use std::collections::HashMap;
 use std::sync::Arc;
 use tokio::sync::mpsc::{UnboundedReceiver, UnboundedSender};
 use tokio::sync::{broadcast, oneshot};
+use tracing::error;
+use crate::models::chat::Message;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub enum WsMessage {}
@@ -11,7 +13,7 @@ pub enum WsMessage {}
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct WsCommand {
     pub from: String,
-    pub message: WsMessage,
+    pub message: Message,
 }
 
 enum Command {
@@ -45,7 +47,9 @@ impl ChatSvc {
                     if let Some((tx, rx)) = chats.get(&chat_id) {
                         _ = reply.send((tx.clone(), rx.resubscribe())).unwrap();
                     } else {
-                        chats.insert(chat_id, broadcast::channel(10));
+                        let channel = broadcast::channel(10);
+                        _ = reply.send((channel.0.clone(), channel.1.resubscribe())).unwrap();
+                        chats.insert(chat_id, channel);
                     }
                 }
             }
@@ -58,6 +62,6 @@ impl ChatSvc {
     ) -> (broadcast::Sender<WsCommand>, broadcast::Receiver<WsCommand>) {
         let (tx, rx) = oneshot::channel();
         _ = self.tx.send(Command::Subscribe(chat_id, tx));
-        rx.await.unwrap()
+        rx.await.map_err(|error| error!(?error)).unwrap()
     }
 }

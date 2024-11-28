@@ -73,11 +73,11 @@ async fn ws_handler(
     Path(chat): Path<String>,
 ) -> impl IntoResponse {
     // Maybe auth
-    let chat = state.chat.subscribe(chat).await;
+    let chan = state.chat.subscribe(chat.clone()).await;
 
     // finalize the upgrade process by returning upgrade callback.
     // we can customize the callback by sending additional info such as address.
-    ws.on_upgrade(move |socket| handle_socket(socket, addr, chat, user.username))
+    ws.on_upgrade(move |socket| handle_socket(socket, addr, chan, chat, user.username, state.clone()))
 }
 
 /// Actual websocket statemachine (one will be spawned per connection)
@@ -85,7 +85,9 @@ async fn handle_socket(
     mut socket: WebSocket,
     who: SocketAddr,
     (chat_tx, mut chat_rx): (Sender<WsCommand>, Receiver<WsCommand>),
+    chat: String,
     username: String,
+    state: Arc<DiscordeState>,
 ) {
     // send a ping (unsupported by some browsers) just to kick things off and get a response
     if socket.send(Message::Ping(vec![1, 2, 3])).await.is_ok() {
@@ -126,9 +128,8 @@ async fn handle_socket(
                         Message::Text(text) => {
                             if let Ok(cmd) = serde_json::from_str::<WsCommand>(&text) {
                                 if cmd.from == username {
-                                    match cmd.message {
-                                        
-                                    }
+                                    _ = state.db.insert_message(chat.clone(), cmd.message.clone()).await;
+                                    
                                     _ = chat_tx.send(cmd);
                                 }
                             }
@@ -139,9 +140,9 @@ async fn handle_socket(
                 },
                 Ok(msg) = chat_rx.recv() => {
                     if msg.from != username {
-                        match msg.message {
+                        /*match msg.message {
                             
-                        }
+                        }*/
                         _ = sender.send(Message::Text(serde_json::to_string(&msg).unwrap())).await;
                     }
                 }
@@ -168,12 +169,18 @@ async fn handle_socket(
 
 pub fn routes(state: Arc<DiscordeState>) -> Router<Arc<DiscordeState>> {
     Router::new()
-        .route("/", post(create_chat))
-        .route("/", get(get_user_chats))
-        .route("/:id", get(ws_handler))
-        .route("/:id/messages", get(get_chat_messages))
-        .route_layer(middleware::from_fn_with_state(
-            state.clone(),
-            super::middleware,
-        ))
+        .merge(Router::new().route("/", post(create_chat))
+            .route("/", get(get_user_chats))
+            .route("/:id/messages", get(get_chat_messages))
+            .route_layer(middleware::from_fn_with_state(
+                state.clone(),
+                super::middleware,
+            )))
+        .merge(Router::new()
+            .route("/:id", get(ws_handler))
+            .route_layer(middleware::from_fn_with_state(
+                state.clone(),
+                super::ws_middleware,
+            ))
+            )
 }

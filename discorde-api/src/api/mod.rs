@@ -52,6 +52,40 @@ async fn middleware(
     next.run(request).await
 }
 
+async fn ws_middleware(
+    State(state): State<Arc<DiscordeState>>,
+    mut request: Request<Body>,
+    next: Next,
+) -> Response<Body> {
+    let username = match request
+        .headers()
+        .get("Sec-WebSocket-Protocol")
+        .and_then(|e| e.to_str().ok())
+        .and_then(|authorization| {
+            authorization
+                .to_string()
+                .split(", ")
+                .last()
+                .map(ToString::to_string)
+        }) {
+        None => return StatusCode::UNAUTHORIZED.into_response(),
+        Some(bearer) => bearer,
+    };
+
+    let user = match state.db.get_user(username).await {
+        Ok(Some(user)) => user,
+        Ok(None) => return StatusCode::UNAUTHORIZED.into_response(),
+        Err(error) => {
+            error!(?error);
+            return StatusCode::UNAUTHORIZED.into_response();
+        }
+    };
+
+    request.extensions_mut().insert(user);
+
+    next.run(request).await
+}
+
 pub fn routes(discorde_state: DiscordeState) -> Router {
     let discorde_state = Arc::new(discorde_state);
     let cors_layer = tower_http::cors::CorsLayer::new()
