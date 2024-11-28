@@ -24,19 +24,18 @@ import {WsCommand} from '../../models/ws-command';
 export class ChatPageComponent implements OnInit, OnDestroy {
   id: string | null = null
   messages: Message[] = []
-  tx: (msg: WsCommand) => void = (_) => {
-  }
   rx$: Observable<Message> = new Observable()
   me: User | null = null
   body: string = ""
-  private close: () => void = () => {
-  };
 
   constructor(private route: ActivatedRoute, private _router: Router) {
     user$.subscribe(e => {
       if (e == null) _router.navigateByUrl("/")
       this.me = e
     })
+  }
+
+  tx: (msg: WsCommand) => void = (_) => {
   }
 
   ngOnInit() {
@@ -66,4 +65,7 @@ export class ChatPageComponent implements OnInit, OnDestroy {
     this.messages.push(new Message(msg.timestamp, msg.author, msg.message))
     this.body = ""
   }
+
+  private close: () => void = () => {
+  };
 }

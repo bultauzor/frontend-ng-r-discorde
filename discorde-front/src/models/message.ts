@@ -18,7 +18,7 @@ export class Message {
   }
 
   private formatTimestamp() {
-    const diff  = Math.round(((new Date()).getTime() - this.timestamp.getTime()) / 1000)
+    const diff = Math.round(((new Date()).getTime() - this.timestamp.getTime()) / 1000)
     if (diff > 60 * 60 * 24) {
       return `${Math.round(diff / 60 * 60 * 24)} days ago`
     } else if (diff == 60 * 60 * 24) {

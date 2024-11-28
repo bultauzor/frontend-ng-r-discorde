@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { UserSelectorComponent } from './user-selector.component';
+import {UserSelectorComponent} from './user-selector.component';
 
 describe('UserSelectorComponent', () => {
   let component: UserSelectorComponent;
@@ -10,7 +10,7 @@ describe('UserSelectorComponent', () => {
     await TestBed.configureTestingModule({
       imports: [UserSelectorComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(UserSelectorComponent);
     component = fixture.componentInstance;

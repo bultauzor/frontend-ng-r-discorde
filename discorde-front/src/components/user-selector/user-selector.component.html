@@ -1,7 +1,8 @@
 <select [value]="value">
   <option value="">--</option>
-  <option *ngFor="let user of (users$ | async)" [value]="user.username" (click)="changed.emit(user.username)" [selected]="value() == user.username">
-    {{user.username}}
+  <option (click)="changed.emit(user.username)" *ngFor="let user of (users$ | async)" [selected]="value() == user.username"
+          [value]="user.username">
+    {{ user.username }}
   </option>
 </select>
 

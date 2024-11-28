@@ -24,6 +24,7 @@ export class NewChatPageComponent {
   people: string[] = ["", ""]
 
   me: User | null = null
+  protected readonly users$ = users$;
 
   constructor(private _router: Router) {
     user$.subscribe(e => {
@@ -32,8 +33,6 @@ export class NewChatPageComponent {
     })
     this._router = _router
   }
-
-  protected readonly users$ = users$;
 
   delete(guy: string) {
     this.people = this.people.filter(value => value != guy)

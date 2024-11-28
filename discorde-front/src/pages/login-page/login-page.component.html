@@ -1,7 +1,7 @@
 Username
-<input type="text" [ngModel]="username" (ngModelChange)="updateUsername($event)">
+<input (ngModelChange)="updateUsername($event)" [ngModel]="username" type="text">
 Password
-<input type="text" [ngModel]="password" (ngModelChange)="updatePassword($event)">
+<input (ngModelChange)="updatePassword($event)" [ngModel]="password" type="text">
 
 <button (click)="send()">Login</button>
 

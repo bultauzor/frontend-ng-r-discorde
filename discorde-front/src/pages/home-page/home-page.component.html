@@ -2,7 +2,7 @@
 
 <ul>
   <li *ngFor="let user of (users$ | async)">
-    {{user.username}}
+    {{ user.username }}
   </li>
 </ul>
 
@@ -10,7 +10,7 @@
 
 <ul>
   <li *ngFor="let chat of (chats$ | async)">
-    <a [routerLink]="'/chat/' + chat.id">{{chat.name}}</a>
+    <a [routerLink]="'/chat/' + chat.id">{{ chat.name }}</a>
   </li>
 </ul>
 
