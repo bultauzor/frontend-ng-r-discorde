@@ -1,26 +1,19 @@
 import {User} from '../models/user';
-import {createStore, select, withProps} from '@ngneat/elf';
-import {localStorageStrategy, persistState} from '@ngneat/elf-persist-state';
 import {base} from './consts';
+import {user$, users$} from './observables';
+import {authStore} from './store';
+import {getChats} from './chats';
 
-interface AuthProps {
-  user: User | null;
-}
-
-const authStore = createStore(
-  {name: 'auth'},
-  withProps<AuthProps>({user: null})
-);
-
-const persist = persistState(authStore, {
-  key: 'auth',
-  storage: localStorageStrategy,
-});
-
-const user$ = authStore.pipe(select((state) => state.user));
 
 let latest: User | null = null
-user$.subscribe(e => latest = e)
+user$.subscribe(async e => {
+  latest = e
+
+  if (e != null) {
+    users$.next(await getUsers())
+    await getChats()
+  }
+})
 
 async function createUser(username: string, password: string): Promise<boolean> {
   const res = await fetch(`${base}/users`, {
@@ -53,6 +46,13 @@ async function login(username: string, password: string) {
   authStore.update((state) => ({
     ...state,
     user: user,
+  }));
+}
+
+async function logout() {
+  authStore.update((state) => ({
+    ...state,
+    user: null,
   }));
 }
 
@@ -90,9 +90,9 @@ async function getUser(id: string): Promise<User> {
 
 
 export {
-  user$,
+  authStore,
   createUser,
   login,
-  getUsers,
+  logout,
   getUser
 }

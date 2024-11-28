@@ -1,7 +1,8 @@
 import {Component, Input} from '@angular/core';
 import {FormsModule} from '@angular/forms';
-import {login, user$} from '../../services/user';
+import {login} from '../../services/user';
 import {Router, RouterLink} from '@angular/router';
+import {user$} from '../../services/observables';
 
 @Component({
   selector: 'app-login-page',

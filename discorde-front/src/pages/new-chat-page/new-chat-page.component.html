@@ -1,0 +1,22 @@
+<h1>Private chat with</h1>
+
+<ul>
+  <li *ngFor="let user of (users$ | async)">
+    <button class="user" (click)="privateChat(user.username)">{{ user.username }}</button>
+  </li>
+</ul>
+
+<h1>Or create a chat group</h1>
+
+<div>Name of the group</div>
+<input type="text" [ngModel]="name" (ngModelChange)="updateName($event)">
+
+<br>
+
+<button (click)="people.push('')">Add guy</button>
+<div *ngFor="let p of people">
+  <app-user-selector [value]="p" (changed)="update(p, $event)"></app-user-selector>
+  <a *ngIf="people.length > 2" (click)="delete(p)">delete</a>
+</div>
+
+<button (click)="createGroup()">Create</button>

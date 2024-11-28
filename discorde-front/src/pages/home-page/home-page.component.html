@@ -1,7 +1,16 @@
 <h1>Available users</h1>
 
 <ul>
-  <li *ngFor="let user of (getUsers$| async)">
+  <li *ngFor="let user of (users$ | async)">
     {{user.username}}
   </li>
 </ul>
+
+<h1>Available chats</h1>
+
+<ul>
+  <li *ngFor="let chat of (chats$ | async)">
+    <a [routerLink]="'/chat/' + chat.id">{{chat.name}}</a>
+  </li>
+</ul>
+

@@ -1,7 +1,8 @@
 import {Component, Input} from '@angular/core';
 import {Router} from '@angular/router';
-import {createUser, login, user$} from '../../services/user';
+import {createUser} from '../../services/user';
 import {FormsModule} from '@angular/forms';
+import {user$} from '../../services/observables';
 
 @Component({
   selector: 'app-register-page',

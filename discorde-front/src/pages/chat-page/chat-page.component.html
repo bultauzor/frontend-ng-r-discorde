@@ -1,7 +1,8 @@
 <div class="main">
-  <ul>
-    <li *ngFor="let chat of []">
-      
-    </li>
-  </ul>
+ <div class="container">
+   <div class="messages">
+     <app-message *ngFor="let msg of messages" [author]="msg.author" [timestamp]="(msg.timestamp$ | async) || 'error'" [message]="msg.message"></app-message>
+   </div>
+   <input type="text" (keydown.enter)="send()" [ngModel]="body" (ngModelChange)="updateBody($event)" placeholder="Type your awesome message">
+ </div>
 </div>

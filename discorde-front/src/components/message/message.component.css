@@ -1,0 +1,10 @@
+.message {
+  padding: 5px;
+  margin: 10px;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
