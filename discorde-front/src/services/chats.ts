@@ -44,7 +44,7 @@ async function getChats(): Promise<void> {
 
   chats$.next(chats)
 
-  setTimeout(getChats, 60000)
+  setTimeout(getChats, 10000)
 }
 
 async function getMessages(id: string): Promise<Message[]> {

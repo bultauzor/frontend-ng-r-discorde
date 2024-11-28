@@ -11,6 +11,8 @@ user$.subscribe(async e => {
 
   if (e != null) {
     users$.next(await getUsers())
+    setInterval(async () => users$.next(await getUsers()), 10000)
+
     await getChats()
   }
 })
