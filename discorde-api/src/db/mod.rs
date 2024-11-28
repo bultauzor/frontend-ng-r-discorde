@@ -103,7 +103,7 @@ impl Database {
                             db.clone().collection("chats").doc(&id).update(chat).await
                         }
                         Err(error) => Err(error),
-                        Ok(None) => Ok(())
+                        Ok(None) => Ok(()),
                     };
                     _ = reply.send(res);
                 }

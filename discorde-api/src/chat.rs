@@ -1,11 +1,11 @@
 use crate::db::Database;
+use crate::models::chat::Message;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::Arc;
 use tokio::sync::mpsc::{UnboundedReceiver, UnboundedSender};
 use tokio::sync::{broadcast, oneshot};
 use tracing::error;
-use crate::models::chat::Message;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub enum WsMessage {}
@@ -48,7 +48,9 @@ impl ChatSvc {
                         _ = reply.send((tx.clone(), rx.resubscribe())).unwrap();
                     } else {
                         let channel = broadcast::channel(10);
-                        _ = reply.send((channel.0.clone(), channel.1.resubscribe())).unwrap();
+                        _ = reply
+                            .send((channel.0.clone(), channel.1.resubscribe()))
+                            .unwrap();
                         chats.insert(chat_id, channel);
                     }
                 }

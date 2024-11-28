@@ -89,7 +89,7 @@ async fn ws_middleware(
 pub fn routes(discorde_state: DiscordeState) -> Router {
     let discorde_state = Arc::new(discorde_state);
     let cors_layer = tower_http::cors::CorsLayer::new()
-        .allow_origin(Any)  // Open access to selected route
+        .allow_origin(Any) // Open access to selected route
         .allow_methods(Any)
         .allow_headers(Any);
     Router::new()
